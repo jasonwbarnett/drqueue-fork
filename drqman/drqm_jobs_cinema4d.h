@@ -17,18 +17,18 @@
 // USA
 //
 
-#ifndef _DRQM_JOBS_AFTEREFFECTS_H_
-#define _DRQM_JOBS_AFTEREFFECTS_H_
+#ifndef _DRQM_JOBS_CINEMA4D_H_
+#define _DRQM_JOBS_CINEMA4D_H_
 
 #include <gtk/gtk.h>
 
 #if defined (__OSX)
-#define KOJ_AFTEREFFECTS_DFLT_VIEWCMD "/Applications/Preview.app/Contents/MacOS/Preview <YOUR_IMAGE>.$DRQUEUE_PADFRAME.<YOUR_FORMAT>"
+#define KOJ_CINEMA4D_DFLT_VIEWCMD "/Applications/Preview.app/Contents/MacOS/Preview <YOUR_IMAGE>.$DRQUEUE_PADFRAME.<YOUR_FORMAT>"
 #else
-#define KOJ_AFTEREFFECTS_DFLT_VIEWCMD "IF YOU HAVE A SOLUTION FOR THIS SUBMIT A BUG REPORT"
+#define KOJ_CINEMA4D_DFLT_VIEWCMD "IF YOU HAVE A SOLUTION FOR THIS SUBMIT A BUG REPORT"
 #endif
 
-struct drqmj_koji_aftereffects {
+struct drqmj_koji_cinema4d {
   GtkWidget *eproject;
   GtkWidget *fsproject;  // File selector for the scene
   GtkWidget *ecomp;
@@ -39,7 +39,7 @@ struct drqmj_koji_aftereffects {
 
 struct drqm_jobs_info;
 
-GtkWidget *jdd_koj_aftereffects_widgets (struct drqm_jobs_info *info);
-GtkWidget *dnj_koj_frame_aftereffects (struct drqm_jobs_info *info);
+GtkWidget *jdd_koj_cinema4d_widgets (struct drqm_jobs_info *info);
+GtkWidget *dnj_koj_frame_cinema4d (struct drqm_jobs_info *info);
 
-#endif // _DRQM_JOBS_AFTEREFFECTS_H_
+#endif // _DRQM_JOBS_CINEMA4D_H_

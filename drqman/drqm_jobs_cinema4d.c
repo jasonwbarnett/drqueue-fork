@@ -25,16 +25,16 @@
 
 #include "drqm_jobs.h"
 #include "drqm_common.h"
-#include "drqm_jobs_aftereffects.h"
+#include "drqm_jobs_cinema4d.h"
 
-static void dnj_koj_frame_aftereffects_project_search (GtkWidget *button, struct drqmj_koji_aftereffects *info);
-static void dnj_koj_frame_aftereffects_project_set (GtkWidget *button, struct drqmj_koji_aftereffects *info);
-static void dnj_koj_frame_aftereffects_script_search (GtkWidget *button, struct drqmj_koji_aftereffects *info);
-static void dnj_koj_frame_aftereffects_script_set (GtkWidget *button, struct drqmj_koji_aftereffects *info);
-static void dnj_koj_frame_aftereffects_bcreate_pressed (GtkWidget *button, struct drqmj_dnji *info);
+static void dnj_koj_frame_cinema4d_project_search (GtkWidget *button, struct drqmj_koji_cinema4d *info);
+static void dnj_koj_frame_cinema4d_project_set (GtkWidget *button, struct drqmj_koji_cinema4d *info);
+static void dnj_koj_frame_cinema4d_script_search (GtkWidget *button, struct drqmj_koji_cinema4d *info);
+static void dnj_koj_frame_cinema4d_script_set (GtkWidget *button, struct drqmj_koji_cinema4d *info);
+static void dnj_koj_frame_cinema4d_bcreate_pressed (GtkWidget *button, struct drqmj_dnji *info);
 
 GtkWidget *
-dnj_koj_frame_aftereffects (struct drqm_jobs_info *info) {
+dnj_koj_frame_cinema4d (struct drqm_jobs_info *info) {
   GtkWidget *frame;
   GtkWidget *vbox;
   GtkWidget *hbox,*hbox2;
@@ -47,7 +47,7 @@ dnj_koj_frame_aftereffects (struct drqm_jobs_info *info) {
   tooltips = TooltipsNew ();
 
   /* Frame */
-  frame = gtk_frame_new ("After Effects job information");
+  frame = gtk_frame_new ("Cinema 4D job information");
 
   /* Main vbox */
   vbox = gtk_vbox_new (FALSE,2);
@@ -61,14 +61,14 @@ dnj_koj_frame_aftereffects (struct drqm_jobs_info *info) {
   hbox2 = gtk_hbox_new (FALSE,0);
   gtk_box_pack_start (GTK_BOX(hbox),hbox2,TRUE,TRUE,0);
   entry = gtk_entry_new_with_max_length (BUFFERLEN-1);
-  info->dnj.koji_aftereffects.eproject = entry;
-  gtk_tooltips_set_tip(tooltips,entry,"File name of the After Effects project file that should be rendered",NULL);
+  info->dnj.koji_cinema4d.eproject = entry;
+  gtk_tooltips_set_tip(tooltips,entry,"File name of the Cinema 4D project file that should be rendered",NULL);
   gtk_box_pack_start (GTK_BOX(hbox2),entry,TRUE,TRUE,2);
   button = gtk_button_new_with_label ("Search");
-  gtk_tooltips_set_tip(tooltips,button,"File selector for the After Effects project file",NULL);
+  gtk_tooltips_set_tip(tooltips,button,"File selector for the Cinema 4D project file",NULL);
   gtk_box_pack_start (GTK_BOX(hbox2),button,FALSE,FALSE,2);
   g_signal_connect (G_OBJECT(button),"clicked",
-                    G_CALLBACK(dnj_koj_frame_aftereffects_project_search),&info->dnj.koji_aftereffects);
+                    G_CALLBACK(dnj_koj_frame_cinema4d_project_search),&info->dnj.koji_cinema4d);
 
   /* Name of composition */
   hbox = gtk_hbox_new (TRUE,2);
@@ -77,7 +77,7 @@ dnj_koj_frame_aftereffects (struct drqm_jobs_info *info) {
   gtk_box_pack_start (GTK_BOX(hbox),label,FALSE,FALSE,2);
   entry = gtk_entry_new_with_max_length (BUFFERLEN-1);
   gtk_tooltips_set_tip(tooltips,entry,"Comp to be rendered",NULL);
-  info->dnj.koji_aftereffects.ecomp = entry;
+  info->dnj.koji_cinema4d.ecomp = entry;
   gtk_box_pack_start (GTK_BOX(hbox),entry,TRUE,TRUE,2);
 
   /* View command */
@@ -88,8 +88,8 @@ dnj_koj_frame_aftereffects (struct drqm_jobs_info *info) {
   entry = gtk_entry_new_with_max_length (BUFFERLEN-1);
   gtk_tooltips_set_tip(tooltips,entry,"Command that will be executed when you select 'Watch image' "
                        "in the frames list (inside the detailed job view)",NULL);
-  info->dnj.koji_aftereffects.eviewcmd = entry;
-  gtk_entry_set_text(GTK_ENTRY(entry),KOJ_AFTEREFFECTS_DFLT_VIEWCMD);
+  info->dnj.koji_cinema4d.eviewcmd = entry;
+  gtk_entry_set_text(GTK_ENTRY(entry),KOJ_CINEMA4D_DFLT_VIEWCMD);
   gtk_box_pack_start (GTK_BOX(hbox),entry,TRUE,TRUE,2);
 
   /* Script directory */
@@ -102,14 +102,14 @@ dnj_koj_frame_aftereffects (struct drqm_jobs_info *info) {
   entry = gtk_entry_new_with_max_length (BUFFERLEN-1);
   gtk_tooltips_set_tip(tooltips,entry,"Directory in which, in case of using the automatic "
                        "script generator, the command script will be saved.",NULL);
-  info->dnj.koji_aftereffects.escript = entry;
-  gtk_entry_set_text (GTK_ENTRY(entry),aftereffectssg_default_script_path());
+  info->dnj.koji_cinema4d.escript = entry;
+  gtk_entry_set_text (GTK_ENTRY(entry),cinema4dsg_default_script_path());
   gtk_box_pack_start (GTK_BOX(hbox2),entry,TRUE,TRUE,2);
   button = gtk_button_new_with_label ("Search");
   gtk_tooltips_set_tip(tooltips,button,"File selector for the script directory",NULL);
   gtk_box_pack_start (GTK_BOX(hbox2),button,FALSE,FALSE,2);
   g_signal_connect (G_OBJECT(button),"clicked",
-                    G_CALLBACK(dnj_koj_frame_aftereffects_script_search),&info->dnj.koji_aftereffects);
+                    G_CALLBACK(dnj_koj_frame_cinema4d_script_search),&info->dnj.koji_cinema4d);
 
   /* Buttons */
   /* Create script */
@@ -120,9 +120,9 @@ dnj_koj_frame_aftereffects (struct drqm_jobs_info *info) {
   gtk_tooltips_set_tip(tooltips,button,"Create automagically the script based on the given information",NULL);
   gtk_box_pack_start (GTK_BOX(bbox),button,TRUE,TRUE,2);
   switch (info->dnj.koj) {
-  case KOJ_AFTEREFFECTS:
+  case KOJ_CINEMA4D:
     g_signal_connect (G_OBJECT(button),"clicked",
-                      G_CALLBACK(dnj_koj_frame_aftereffects_bcreate_pressed),&info->dnj);
+                      G_CALLBACK(dnj_koj_frame_cinema4d_bcreate_pressed),&info->dnj);
     break;
   default:
     fprintf (stderr,"What ?!\n");
@@ -135,13 +135,13 @@ dnj_koj_frame_aftereffects (struct drqm_jobs_info *info) {
 }
 
 GtkWidget *
-jdd_koj_aftereffects_widgets (struct drqm_jobs_info *info) {
+jdd_koj_cinema4d_widgets (struct drqm_jobs_info *info) {
   GtkWidget *table;
   GtkWidget *label;
   GtkAttachOptions options = (GtkAttachOptions)(GTK_EXPAND | GTK_SHRINK | GTK_FILL) ;
-  char *labels[] = { "Project file:", info->jdd.job.koji.aftereffects.project,
-                     "Comp:", info->jdd.job.koji.aftereffects.comp,
-                     "View command:", info->jdd.job.koji.aftereffects.viewcmd,
+  char *labels[] = { "Project file:", info->jdd.job.koji.cinema4d.project,
+                     "Comp:", info->jdd.job.koji.cinema4d.comp,
+                     "View command:", info->jdd.job.koji.cinema4d.viewcmd,
                      NULL };
   char **cur;
   int r,c;   /* Rows and columns */
@@ -169,7 +169,7 @@ jdd_koj_aftereffects_widgets (struct drqm_jobs_info *info) {
 }
 
 static void
-dnj_koj_frame_aftereffects_project_search (GtkWidget *button, struct drqmj_koji_aftereffects *info) {
+dnj_koj_frame_cinema4d_project_search (GtkWidget *button, struct drqmj_koji_cinema4d *info) {
   GtkWidget *dialog;
   char dir[BUFFERLEN];
   
@@ -185,7 +185,7 @@ dnj_koj_frame_aftereffects_project_search (GtkWidget *button, struct drqmj_koji_
   }
 
   gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION(dialog)->ok_button),
-                      "clicked", GTK_SIGNAL_FUNC (dnj_koj_frame_aftereffects_project_set), info);
+                      "clicked", GTK_SIGNAL_FUNC (dnj_koj_frame_cinema4d_project_set), info);
   gtk_signal_connect_object (GTK_OBJECT (GTK_FILE_SELECTION(dialog)->ok_button),
                              "clicked", GTK_SIGNAL_FUNC (gtk_widget_destroy),
                              (gpointer) dialog);
@@ -197,7 +197,7 @@ dnj_koj_frame_aftereffects_project_search (GtkWidget *button, struct drqmj_koji_
 }
 
 static void
-dnj_koj_frame_aftereffects_project_set (GtkWidget *button, struct drqmj_koji_aftereffects *info) {
+dnj_koj_frame_cinema4d_project_set (GtkWidget *button, struct drqmj_koji_cinema4d *info) {
   char buf[BUFFERLEN];
   
   // fix compiler warning
@@ -208,18 +208,18 @@ dnj_koj_frame_aftereffects_project_set (GtkWidget *button, struct drqmj_koji_aft
 }
 
 static void
-dnj_koj_frame_aftereffects_bcreate_pressed (GtkWidget *button, struct drqmj_dnji *info) {
-  struct aftereffectssgi aftereffectssgi; /* Aftereffects script generator info */
+dnj_koj_frame_cinema4d_bcreate_pressed (GtkWidget *button, struct drqmj_dnji *info) {
+  struct cinema4dsgi cinema4dsgi; /* Aftereffects script generator info */
   char *file;
 
   // fix compiler warning
   (void)button;
 
-  strncpy (aftereffectssgi.project,gtk_entry_get_text(GTK_ENTRY(info->koji_aftereffects.eproject)),BUFFERLEN-1);
-  strncpy (aftereffectssgi.comp,gtk_entry_get_text(GTK_ENTRY(info->koji_aftereffects.ecomp)),BUFFERLEN-1);
-  strncpy (aftereffectssgi.scriptdir,gtk_entry_get_text(GTK_ENTRY(info->koji_aftereffects.escript)),BUFFERLEN-1);
+  strncpy (cinema4dsgi.project,gtk_entry_get_text(GTK_ENTRY(info->koji_cinema4d.eproject)),BUFFERLEN-1);
+  strncpy (cinema4dsgi.comp,gtk_entry_get_text(GTK_ENTRY(info->koji_cinema4d.ecomp)),BUFFERLEN-1);
+  strncpy (cinema4dsgi.scriptdir,gtk_entry_get_text(GTK_ENTRY(info->koji_cinema4d.escript)),BUFFERLEN-1);
 
-  if ((file = aftereffectssg_create (&aftereffectssgi)) == NULL) {
+  if ((file = cinema4dsg_create (&cinema4dsgi)) == NULL) {
     fprintf (stderr,"ERROR: %s\n",drerrno_str());
     return;
   } else {
@@ -229,7 +229,7 @@ dnj_koj_frame_aftereffects_bcreate_pressed (GtkWidget *button, struct drqmj_dnji
 }
 
 static void
-dnj_koj_frame_aftereffects_script_search (GtkWidget *button, struct drqmj_koji_aftereffects *info) {
+dnj_koj_frame_cinema4d_script_search (GtkWidget *button, struct drqmj_koji_cinema4d *info) {
   GtkWidget *dialog;
   
   // fix compiler warning
@@ -243,7 +243,7 @@ dnj_koj_frame_aftereffects_script_search (GtkWidget *button, struct drqmj_koji_a
   }
 
   gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION(dialog)->ok_button),
-                      "clicked", GTK_SIGNAL_FUNC (dnj_koj_frame_aftereffects_script_set), info);
+                      "clicked", GTK_SIGNAL_FUNC (dnj_koj_frame_cinema4d_script_set), info);
   gtk_signal_connect_object (GTK_OBJECT (GTK_FILE_SELECTION(dialog)->ok_button),
                              "clicked", GTK_SIGNAL_FUNC (gtk_widget_destroy),
                              (gpointer) dialog);
@@ -256,7 +256,7 @@ dnj_koj_frame_aftereffects_script_search (GtkWidget *button, struct drqmj_koji_a
 }
 
 static void
-dnj_koj_frame_aftereffects_script_set (GtkWidget *button, struct drqmj_koji_aftereffects *info) {
+dnj_koj_frame_cinema4d_script_set (GtkWidget *button, struct drqmj_koji_cinema4d *info) {
   char buf[BUFFERLEN];
   char *p;
 
