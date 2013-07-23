@@ -591,6 +591,16 @@ CopyJob_CloneInfo (struct drqm_jobs_info *info) {
     gtk_entry_set_text(GTK_ENTRY(info->dnj.koji_aftereffects.eviewcmd),
                        info->jobs[info->row].koji.aftereffects.viewcmd);
     break;
+  case KOJ_CINEMA4D:
+    gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(info->dnj.ckoj)->entry),
+                       "Cinema 4D");
+    gtk_entry_set_text(GTK_ENTRY(info->dnj.koji_cinema4d.escene),
+                       info->jobs[info->row].koji.cinema4d.scene);
+    gtk_entry_set_text(GTK_ENTRY(info->dnj.koji_cinema4d.erenderdir),
+                       info->jobs[info->row].koji.cinema4d.renderdir);
+    gtk_entry_set_text(GTK_ENTRY(info->dnj.koji_cinema4d.eviewcmd),
+                       info->jobs[info->row].koji.cinema4d.viewcmd);
+    break;
   case KOJ_SHAKE:
     gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(info->dnj.ckoj)->entry),
                        "Shake");
@@ -1548,6 +1558,10 @@ dnj_koj_combo_changed (GtkWidget *entry, struct drqm_jobs_info *info) {
       break;
     case KOJ_AFTEREFFECTS:
       info->dnj.fkoj = dnj_koj_frame_aftereffects (info);
+      gtk_box_pack_start(GTK_BOX(info->dnj.vbkoj),info->dnj.fkoj,TRUE,TRUE,2);
+      break;
+    case KOJ_CINEMA4D:
+      info->dnj.fkoj = dnj_koj_frame_cinema4d (info);
       gtk_box_pack_start(GTK_BOX(info->dnj.vbkoj),info->dnj.fkoj,TRUE,TRUE,2);
       break;
     case KOJ_SHAKE:

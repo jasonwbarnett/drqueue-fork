@@ -61,7 +61,7 @@ dnj_koj_frame_cinema4d (struct drqm_jobs_info *info) {
   hbox2 = gtk_hbox_new (FALSE,0);
   gtk_box_pack_start (GTK_BOX(hbox),hbox2,TRUE,TRUE,0);
   entry = gtk_entry_new_with_max_length (BUFFERLEN-1);
-  info->dnj.koji_cinema4d.eproject = entry;
+  info->dnj.koji_cinema4d.escene = entry;
   gtk_tooltips_set_tip(tooltips,entry,"File name of the Cinema 4D project file that should be rendered",NULL);
   gtk_box_pack_start (GTK_BOX(hbox2),entry,TRUE,TRUE,2);
   button = gtk_button_new_with_label ("Search");
@@ -77,7 +77,7 @@ dnj_koj_frame_cinema4d (struct drqm_jobs_info *info) {
   gtk_box_pack_start (GTK_BOX(hbox),label,FALSE,FALSE,2);
   entry = gtk_entry_new_with_max_length (BUFFERLEN-1);
   gtk_tooltips_set_tip(tooltips,entry,"Comp to be rendered",NULL);
-  info->dnj.koji_cinema4d.ecomp = entry;
+  info->dnj.koji_cinema4d.erendirdir = entry;
   gtk_box_pack_start (GTK_BOX(hbox),entry,TRUE,TRUE,2);
 
   /* View command */
@@ -139,8 +139,8 @@ jdd_koj_cinema4d_widgets (struct drqm_jobs_info *info) {
   GtkWidget *table;
   GtkWidget *label;
   GtkAttachOptions options = (GtkAttachOptions)(GTK_EXPAND | GTK_SHRINK | GTK_FILL) ;
-  char *labels[] = { "Project file:", info->jdd.job.koji.cinema4d.project,
-                     "Comp:", info->jdd.job.koji.cinema4d.comp,
+  char *labels[] = { "Project file:", info->jdd.job.koji.cinema4d.scene,
+                     "Comp:", info->jdd.job.koji.cinema4d.rendirdir,
                      "View command:", info->jdd.job.koji.cinema4d.viewcmd,
                      NULL };
   char **cur;
@@ -215,8 +215,8 @@ dnj_koj_frame_cinema4d_bcreate_pressed (GtkWidget *button, struct drqmj_dnji *in
   // fix compiler warning
   (void)button;
 
-  strncpy (cinema4dsgi.project,gtk_entry_get_text(GTK_ENTRY(info->koji_cinema4d.eproject)),BUFFERLEN-1);
-  strncpy (cinema4dsgi.comp,gtk_entry_get_text(GTK_ENTRY(info->koji_cinema4d.ecomp)),BUFFERLEN-1);
+  strncpy (cinema4dsgi.scene,gtk_entry_get_text(GTK_ENTRY(info->koji_cinema4d.escene)),BUFFERLEN-1);
+  strncpy (cinema4dsgi.rendirdir,gtk_entry_get_text(GTK_ENTRY(info->koji_cinema4d.erendirdir)),BUFFERLEN-1);
   strncpy (cinema4dsgi.scriptdir,gtk_entry_get_text(GTK_ENTRY(info->koji_cinema4d.escript)),BUFFERLEN-1);
 
   if ((file = cinema4dsg_create (&cinema4dsgi)) == NULL) {

@@ -1,11 +1,11 @@
 #
 # THIS IS A PYTHON SCRIPT FILE
-# 
+#
 # Default configuration for Cinema4D script generator
-# 
+#
 # Python variables
 # SCENE, RENDERDIR, RF_OWNER
-# 
+#
 # shell variables
 # DRQUEUE_BLOCKSIZE, DRQUEUE_COMPID, DRQUEUE_ENDFRAME, DRQUEUE_ETC, DRQUEUE_FRAME,
 # DRQUEUE_JOBID, DRQUEUE_JOBNAME, DRQUEUE_OS, DRQUEUE_OWNER, DRQUEUE_PADFRAME, 
@@ -51,14 +51,14 @@ if DRQUEUE_OS == "WINDOWS":
 	SCENE     = subprocess.Popen(["cygpath.exe", "-w " + SCENE], stdout=subprocess.PIPE).communicate()[0]
 	RENDERDIR = subprocess.Popen(["cygpath.exe", "-w " + RENDERDIR], stdout=subprocess.PIPE).communicate()[0]
 	
-	ENGINE_PATH = "C:\Program\ Files\MAXON\CINEMA\ 4D\ R10\CINEMA\ 4D.exe"
-	LOGFILE     = "C:\Program\ Files\MAXON\CINEMA\ 4D\ R10\RENDERLOG.TXT"
+	ENGINE_PATH = "C:\Program\ Files\MAXON\CINEMA\ 4D\ R13\CINEMA\ 4D.exe"
+	LOGFILE     = "C:\Program\ Files\MAXON\CINEMA\ 4D\ R13\RENDERLOG.TXT"
 
 if DRQUEUE_OS == "OSX":
 	THREADS     = subprocess.Popen("/usr/sbin/sysctl hw.ncpu | awk '{print $2}'", shell=True, stdout=subprocess.PIPE).stdout.read().rstrip()
 
-	ENGINE_PATH = "/Applications/MAXON/CINEMA\ 4D\ R10/CINEMA\ 4D.app/Contents/MacOS/CINEMA\ 4D"
-	LOGFILE     = "/Applications/MAXON/CINEMA\ 4D\ R10/CINEMA\ 4D.app/Contents/MacOS/CINEMA\ 4D/RENDERLOG.TXT"    
+	ENGINE_PATH = "/Applications/MAXON/CINEMA\ 4D\ R13/CINEMA\ 4D.app/Contents/MacOS/CINEMA\ 4D"
+	LOGFILE     = "/Applications/MAXON/CINEMA\ 4D\ R13/CINEMA\ 4D.app/Contents/MacOS/CINEMA\ 4D/RENDERLOG.TXT"
 
 if DRQUEUE_OS == "LINUX":
 	THREADS = 0
@@ -72,9 +72,9 @@ if DRQUEUE_OS == "LINUX":
 	SCENE     = subprocess.Popen(["winepath", "-w " + SCENE], stdout=subprocess.PIPE).communicate()[0]
 	RENDERDIR = subprocess.Popen(["winepath", "-w " + RENDERDIR], stdout=subprocess.PIPE).communicate()[0]
 	
-	WORKDIR     = "~/.wine/drive_c/Program\ Files/MAXON/CINEMA\ 4D\ R10"
+	WORKDIR     = "~/.wine/drive_c/Program\ Files/MAXON/CINEMA\ 4D\ R13"
 	ENGINE_PATH = "wine CINEMA\ 4D.exe"
-	LOGFILE     = "~/.wine/drive_c/Program\ Files/MAXON/CINEMA\ 4D\ R10/RENDERLOG.TXT"
+	LOGFILE     = "~/.wine/drive_c/Program\ Files/MAXON/CINEMA\ 4D\ R13/RENDERLOG.TXT"
 	
 	# change into workdir, better for wine startup
 	os.chdir(WORKDIR)
@@ -92,8 +92,10 @@ if BLOCK > DRQUEUE_ENDFRAME:
 # delete old logfile
 os.remove(LOGFILE)
 
-command = ENGINE_PATH + "-nogui -render " + SCENE + " -oimage " + RENDERDIR + " -frame " + str(DRQUEUE_FRAME) + " " + str(BLOCK) + " -omultipass " + RENDERDIR + " -threads " + THREADS
-
+if RENDERDIR:
+  command = ENGINE_PATH + "-nogui -render " + SCENE + " -oimage " + RENDERDIR + " -frame " + str(DRQUEUE_FRAME) + " " + str(BLOCK) + " -omultipass " + RENDERDIR + " -threads " + THREADS
+else:
+  command = ENGINE_PATH + "-nogui -render " + SCENE + " -frame " + str(DRQUEUE_FRAME) + " " + str(BLOCK) + " -threads " + THREADS
 
 print(command)
 sys.stdout.flush()

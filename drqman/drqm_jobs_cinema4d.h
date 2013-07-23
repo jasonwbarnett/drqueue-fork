@@ -29,9 +29,9 @@
 #endif
 
 struct drqmj_koji_cinema4d {
-  GtkWidget *eproject;
+  GtkWidget *escene;
   GtkWidget *fsproject;  // File selector for the scene
-  GtkWidget *ecomp;
+  GtkWidget *erenderdir;
   GtkWidget *eviewcmd;
   GtkWidget *escript;   // Entry script location
   GtkWidget *fsscript;  // File selectot for the script directory
