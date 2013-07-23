@@ -43,6 +43,14 @@ DRQUEUE_PADFRAMES  = int(os.getenv("DRQUEUE_PADFRAMES"))
 DRQUEUE_STARTFRAME = int(os.getenv("DRQUEUE_STARTFRAME"))
 DRQUEUE_STEPFRAME  = int(os.getenv("DRQUEUE_STEPFRAME"))
 
+## Grab file to render from SCENE environment variable
+try:
+  os.environ["SCENE"]
+except KeyError:
+  print "Please set the environment variable SCENE"
+  exit(1)
+else:
+  SCENE = os.environ["SCENE"]
 
 if DRQUEUE_OS == "WINDOWS":
 	THREADS = 0
