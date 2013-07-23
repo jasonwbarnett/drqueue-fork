@@ -38,6 +38,7 @@
 #include "drqm_jobs_3delight.h"
 #include "drqm_jobs_lightwave.h"
 #include "drqm_jobs_aftereffects.h"
+#include "drqm_jobs_cinema4d.h"
 #include "drqm_jobs_shake.h"
 #include "drqm_jobs_terragen.h"
 #include "drqm_jobs_nuke.h"
@@ -105,6 +106,7 @@ struct drqmj_dnji {       /* dialog new job info */
   struct drqmj_koji_lightwave koji_lightwave;
   struct drqmj_koji_nuke koji_nuke;
   struct drqmj_koji_aftereffects koji_aftereffects;
+  struct drqmj_koji_cinema4d koji_cinema4d;
   struct drqmj_koji_shake koji_shake;
   struct drqmj_koji_terragen koji_terragen;
   struct drqmj_koji_turtle koji_turtle;
