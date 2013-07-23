@@ -152,6 +152,12 @@ union koj_info {  /* Kind of job information */
     char viewcmd[BUFFERLEN];
   }
   aftereffects;
+  struct koji_cinema4d {
+    char project[BUFFERLEN];
+    char comp[BUFFERLEN];
+    char viewcmd[BUFFERLEN];
+  }
+  cinema4d;
   struct koji_shake {
     char script[BUFFERLEN];
     char viewcmd[BUFFERLEN];
@@ -214,8 +220,9 @@ union koj_info {  /* Kind of job information */
 #define KOJ_MANTRA        14 // Mantra koj
 #define KOJ_XSI           15 // XSI koj
 #define KOJ_LUXRENDER     16 // LUXRENDER koj
-#define KOJ_VRAY		  17 // VRAY koj
+#define KOJ_VRAY          17 // VRAY koj
 #define KOJ_3DSMAX        18 // 3DSMAX koj
+#define KOJ_CINEMA4D      19 // Cinema 4D koj
 
 /* JOB SECTION */
 typedef enum {

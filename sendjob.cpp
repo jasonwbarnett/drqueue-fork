@@ -169,6 +169,13 @@ int main (int argc,char *argv[]) {
       goto cleanup;
     }
     break;
+  case TOJ_CINEMA4D:
+    if (RegisterCinema4dJobFromFile (infile)) {
+      std::cerr << "Error registering Cinema 4D job from file: " << argv[argc-1] << std::endl;
+      nRet = 1;
+      goto cleanup;
+    }
+    break;
   case TOJ_SHAKE:
     if (RegisterShakeJobFromFile (infile)) {
       std::cerr << "Error registering Shake job from file: " << argv[argc-1] << std::endl;
@@ -242,7 +249,7 @@ void usage (void) {
   << "\t-d enable debug messages\n"
   << "\t-h prints this help\n"
   << "\t-f [frameStart[:frameEnd[:stepFrame]]] (only for general jobs)\n"
-  << "\t-t [general|maya|blender|mentalray|aqsis|3delight|pixie|lightwave|terragen|nuke|aftereffects|shake|xsi|luxrender] type of job\n";
+  << "\t-t [general|maya|blender|mentalray|aqsis|3delight|pixie|lightwave|terragen|nuke|aftereffects|cinema4d|shake|xsi|luxrender] type of job\n";
 }
 
 
@@ -1022,6 +1029,69 @@ int RegisterAftereffectsJobFromFile (std::ifstream &infile) {
   return 0;
 }
 
+int RegisterCinema4dJobFromFile (std::ifstream &infile) {
+  // Job variables for the script generator
+  struct job job;
+  struct cinema4dsgi cinema4dSgi;
+
+  std::string owner;
+  std::string jobName;
+  int frameStart,frameEnd,frameStep;
+  std::string scenePath;
+  std::string comp;
+  char *pathToScript;
+
+  job_init(&job);
+
+  getline(infile,owner);
+  getline(infile,jobName);
+  infile >> frameStart;
+  infile >> frameEnd;
+  infile >> frameStep;
+  getline(infile,scenePath); //
+  getline(infile,scenePath); // Get two times because '>>' leaves the pointer before \n
+  getline(infile,comp);
+
+  //  strncpy(cinema4dSgi.file_owner,owner.c_str(),BUFFERLEN-1);
+  strncpy(cinema4dSgi.project,scenePath.c_str(),BUFFERLEN-1);
+  strncpy(cinema4dSgi.comp,comp.c_str(),BUFFERLEN-1);
+  snprintf(cinema4dSgi.scriptdir,BUFFERLEN,"%s/tmp/",getenv("DRQUEUE_ROOT"));
+
+  job.autoRequeue = 1;
+
+  if (!(pathToScript = cinema4dsg_create(&cinema4dSgi))) {
+    std::cerr << "Error creating script file\n";
+    return 1;
+  }
+
+  strncpy (job.name,jobName.c_str(),MAXNAMELEN-1);
+  strncpy (job.cmd,pathToScript,MAXCMDLEN-1);
+  strncpy (job.owner,owner.c_str(),MAXNAMELEN-1);
+  strncpy (job.email,owner.c_str(),MAXNAMELEN-1);
+  job.frame_start = frameStart;
+  job.frame_end = frameEnd;
+  job.frame_step = frameStep;
+  job.priority = 500;
+
+  job.koj = KOJ_CINEMA4D;
+  strncpy (job.koji.cinema4d.project,scenePath.c_str(),BUFFERLEN-1);
+  strncpy (job.koji.cinema4d.comp,comp.c_str(),BUFFERLEN-1);
+  strncpy (job.koji.cinema4d.viewcmd,"",BUFFERLEN-1);
+
+  job.limits.os_flags = OSF_ALL;
+  job.limits.nmaxcpus = (uint16_t)-1;
+  job.limits.nmaxcpuscomputer = (uint16_t)-1;
+  job.limits.memory = 0;
+  strncpy (job.limits.pool,"Default",MAXNAMELEN-1);
+
+  if (!register_job(&job)) {
+    std::cerr << "Error sending job to the queue\n";
+    return 1;
+  }
+
+  return 0;
+}
+
 int RegisterAqsisJobFromFile (std::ifstream &infile) {
   // Job variables for the script generator
   struct job job;
@@ -1318,6 +1388,8 @@ int str2toj (char *str) {
     toj = TOJ_PIXIE;
   } else if (strstr(str,"aftereffects") != NULL) {
     toj = TOJ_AFTEREFFECTS;
+  } else if (strstr(str,"cinema4d") != NULL) {
+    toj = TOJ_CINEMA4D;
   } else if (strstr(str,"shake") != NULL) {
     toj = TOJ_SHAKE;
   } else if (strstr(str,"nuke") != NULL) {

@@ -966,6 +966,12 @@ job_environment_set (struct job *job, uint32_t iframe) {
     snprintf (comp,BUFFERLEN-1,"DRQUEUE_COMP=%s",job->koji.aftereffects.comp);
     putenv (comp);
     break;
+  case KOJ_CINEMA4D:
+    snprintf (project,BUFFERLEN-1,"DRQUEUE_PROJECT=%s",job->koji.cinema4d.project);
+    putenv (project);
+    snprintf (comp,BUFFERLEN-1,"DRQUEUE_COMP=%s",job->koji.cinema4d.comp);
+    putenv (comp);
+    break;
   case KOJ_SHAKE:
     snprintf (script,BUFFERLEN-1,"DRQUEUE_SCRIPT=%s",job->koji.shake.script);
     putenv (script);
@@ -1053,6 +1059,7 @@ job_bswap_from_network (struct job *orig, struct job *dest) {
   case KOJ_TERRAGEN:
   case KOJ_NUKE:
   case KOJ_AFTEREFFECTS:
+  case KOJ_CINEMA4D:
   case KOJ_SHAKE:
   case KOJ_LUXRENDER:
     break;
@@ -1107,6 +1114,7 @@ job_bswap_to_network (struct job *orig, struct job *dest) {
   case KOJ_TERRAGEN:
   case KOJ_NUKE:
   case KOJ_AFTEREFFECTS:
+  case KOJ_CINEMA4D:
   case KOJ_SHAKE:
   case KOJ_LUXRENDER:
     break;
@@ -1275,6 +1283,9 @@ job_koj_string (struct job *job) {
     break;
   case KOJ_AFTEREFFECTS:
     msg = "After Effects";
+    break;
+  case KOJ_CINEMA4D:
+    msg = "Cinema 4D";
     break;
   case KOJ_SHAKE:
     msg = "Shake";

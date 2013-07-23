@@ -591,6 +591,16 @@ CopyJob_CloneInfo (struct drqm_jobs_info *info) {
     gtk_entry_set_text(GTK_ENTRY(info->dnj.koji_aftereffects.eviewcmd),
                        info->jobs[info->row].koji.aftereffects.viewcmd);
     break;
+  case KOJ_CINEMA4D:
+    gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(info->dnj.ckoj)->entry),
+                       "Cinema 4D");
+    gtk_entry_set_text(GTK_ENTRY(info->dnj.koji_cinema4d.eproject),
+                       info->jobs[info->row].koji.cinema4d.project);
+    gtk_entry_set_text(GTK_ENTRY(info->dnj.koji_cinema4d.ecomp),
+                       info->jobs[info->row].koji.cinema4d.comp);
+    gtk_entry_set_text(GTK_ENTRY(info->dnj.koji_cinema4d.eviewcmd),
+                       info->jobs[info->row].koji.cinema4d.viewcmd);
+    break;
   case KOJ_SHAKE:
     gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(info->dnj.ckoj)->entry),
                        "Shake");
@@ -1436,6 +1446,7 @@ dnj_koj_widgets (struct drqm_jobs_info *info) {
   items = g_list_append (items,(char*)"3delight");
   items = g_list_append (items,(char*)"Lightwave");
   items = g_list_append (items,(char*)"After Effects");
+  items = g_list_append (items,(char*)"Cinema 4D");
   items = g_list_append (items,(char*)"Shake");
   items = g_list_append (items,(char*)"Terragen");
   items = g_list_append (items,(char*)"Nuke");
@@ -1485,6 +1496,8 @@ dnj_koj_combo_changed (GtkWidget *entry, struct drqm_jobs_info *info) {
     new_koj = KOJ_TERRAGEN;
   } else if (strcmp(gtk_entry_get_text(GTK_ENTRY(entry)),"After Effects") == 0) {
     new_koj = KOJ_AFTEREFFECTS;
+  } else if (strcmp(gtk_entry_get_text(GTK_ENTRY(entry)),"Cinema 4D") == 0) {
+    new_koj = KOJ_CINEMA4D;
   } else if (strcmp(gtk_entry_get_text(GTK_ENTRY(entry)),"Shake") == 0) {
     new_koj = KOJ_SHAKE;
   } else if (strcmp(gtk_entry_get_text(GTK_ENTRY(entry)),"Turtle") == 0) {
@@ -1548,6 +1561,10 @@ dnj_koj_combo_changed (GtkWidget *entry, struct drqm_jobs_info *info) {
       break;
     case KOJ_AFTEREFFECTS:
       info->dnj.fkoj = dnj_koj_frame_aftereffects (info);
+      gtk_box_pack_start(GTK_BOX(info->dnj.vbkoj),info->dnj.fkoj,TRUE,TRUE,2);
+      break;
+    case KOJ_CINEMA4D:
+      info->dnj.fkoj = dnj_koj_frame_cinema4d (info);
       gtk_box_pack_start(GTK_BOX(info->dnj.vbkoj),info->dnj.fkoj,TRUE,TRUE,2);
       break;
     case KOJ_SHAKE:
