@@ -96,9 +96,9 @@ os.remove(LOGFILE)
 try:
   RENDERDIR
 except NameError:
-  command = ENGINE_PATH + "-nogui -render " + SCENE + " -frame " + str(DRQUEUE_FRAME) + " " + str(BLOCK) + " -threads " + THREADS
+  command = ENGINE_PATH + " -nogui -render " + SCENE + " -frame " + str(DRQUEUE_FRAME) + " " + str(BLOCK) + " -threads " + THREADS
 else:
-  command = ENGINE_PATH + "-nogui -render " + SCENE + " -oimage " + RENDERDIR + " -frame " + str(DRQUEUE_FRAME) + " " + str(BLOCK) + " -omultipass " + RENDERDIR + " -threads " + THREADS
+  command = ENGINE_PATH + " -nogui -render " + SCENE + " -oimage " + RENDERDIR + " -frame " + str(DRQUEUE_FRAME) + " " + str(BLOCK) + " -omultipass " + RENDERDIR + " -threads " + THREADS
 
 print(command)
 sys.stdout.flush()
