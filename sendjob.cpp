@@ -47,8 +47,8 @@ int main (int argc,char *argv[]) {
   int fs, fe, sf;
   int nRet = 0;
   std::ifstream infile;
-  
-  
+
+
   if(network_initialize() != 0) {
     fprintf (stderr,"Could not initialize the network: %s\n", drerrno_str());
     nRet = 1;
@@ -97,8 +97,8 @@ int main (int argc,char *argv[]) {
     nRet = 1;
     goto cleanup;
   }
-  
-  // DEBUG:  
+
+  // DEBUG:
   if(debug) { std::cerr << "set_default_env().\n"; }
   set_default_env();
 
@@ -118,9 +118,9 @@ int main (int argc,char *argv[]) {
     }
     break;
   case TOJ_MAYA:
-    // DEBUG:  
+    // DEBUG:
     if(debug) { std::cerr << "entering RegisterMayaJobFromFile().\n"; }
-  
+
     if (RegisterMayaJobFromFile (infile)) {
       std::cerr << "Error registering MAYA job from file: " << argv[argc-1] << std::endl;
       nRet = 1;
@@ -137,6 +137,13 @@ int main (int argc,char *argv[]) {
   case TOJ_BLENDER:
     if (RegisterBlenderJobFromFile (infile)) {
       std::cerr << "Error registering BLENDER job from file: " << argv[argc-1] << std::endl;
+      nRet = 1;
+      goto cleanup;
+    }
+    break;
+  case TOJ_FARTING:
+    if (RegisterFartingJobFromFile (infile)) {
+      std::cerr << "Error registering FARTING job from file: " << argv[argc-1] << std::endl;
       nRet = 1;
       goto cleanup;
     }
@@ -235,7 +242,7 @@ void show_version () {
 }
 
 void usage (void) {
-  std::cerr << "About: sendjob generates a render job from a description file. See sendjob_maya_example.txt for an example.\n\n"; 
+  std::cerr << "About: sendjob generates a render job from a description file. See sendjob_maya_example.txt for an example.\n\n";
   std::cerr << "Usage: sendjob [-vdh] [-f frameStart[:frameEnd[:stepFrame]]] -t <type> <job_file>\n"
   << "Valid options:\n"
   << "\t-v version information\n"
@@ -347,10 +354,10 @@ int RegisterGeneralJob (char* infile, int frameStart, int frameEnd, int frameSte
 }
 
 int RegisterMayaJobFromFile (std::ifstream &infile) {
-  
-  // DEBUG:  
+
+  // DEBUG:
   if(debug) { std::cerr << "RegisterMayaJobFromFile().\n"; }
-  
+
   // Job variables for the script generator
   struct job job;
   struct mayasgi mayaSgi;
@@ -396,7 +403,7 @@ int RegisterMayaJobFromFile (std::ifstream &infile) {
   mayaSgi.res_x = resX;
   mayaSgi.res_y = resY;
   strncpy(mayaSgi.format,fileFormat.c_str(),BUFFERLEN-1);
-  
+
   // DEBUG:
   if(debug) {
     std::cerr << "\nFetched job variables:\nrenderer: ";
@@ -423,7 +430,7 @@ int RegisterMayaJobFromFile (std::ifstream &infile) {
     std::cerr << mayaSgi.format;
     std::cerr << "\n\n";
   }
-  
+
   if (!(pathToScript = mayasg_create(&mayaSgi))) {
     std::cerr << "Error creating script file\n";
     return 1;
@@ -554,7 +561,7 @@ int RegisterBlenderJobFromFile (std::ifstream &infile) {
 
   strncpy(blenderSgi.scene,scenePath.c_str(),BUFFERLEN-1);
   snprintf(blenderSgi.scriptdir,BUFFERLEN,"%s/tmp/",getenv("DRQUEUE_ROOT"));
-  blenderSgi.render_type = render_type;	
+  blenderSgi.render_type = render_type;
   job.autoRequeue = 1;
 
   if (!(pathToScript = blendersg_create(&blenderSgi))) {
@@ -575,6 +582,64 @@ int RegisterBlenderJobFromFile (std::ifstream &infile) {
   job.koj = KOJ_BLENDER;
   strncpy (job.koji.blender.scene,scenePath.c_str(),BUFFERLEN-1);
   strncpy (job.koji.blender.viewcmd,"",BUFFERLEN-1);
+
+  job.limits.os_flags = OSF_ALL;
+  job.limits.nmaxcpus = (uint16_t)-1;
+  job.limits.nmaxcpuscomputer = (uint16_t)-1;
+  job.limits.memory = 0;
+  strncpy (job.limits.pool,"Default",MAXNAMELEN-1);
+
+  if (!register_job(&job)) {
+    std::cerr << "Error sending job to the queue\n";
+    return 1;
+  }
+
+  return 0;
+}
+
+int RegisterFartingJobFromFile (std::ifstream &infile) {
+  // Job variables for the script generator
+  struct job job;
+  struct fartingsgi fartingSgi;
+
+  std::string jobName;
+  int frameStart,frameEnd,frameStep,render_type;
+  std::string scenePath;
+  char *pathToScript;
+
+  job_init(&job);
+
+  getline(infile,jobName);
+  infile >> frameStart;
+  infile >> frameEnd;
+  infile >> frameStep;
+  infile >> render_type;
+  getline(infile,scenePath); //
+  getline(infile,scenePath); // Get two times because '>>' leaves the pointer before \n
+
+  strncpy(fartingSgi.scene,scenePath.c_str(),BUFFERLEN-1);
+  snprintf(fartingSgi.scriptdir,BUFFERLEN,"%s/tmp/",getenv("DRQUEUE_ROOT"));
+  fartingSgi.render_type = render_type;
+  job.autoRequeue = 1;
+
+  if (!(pathToScript = fartingsg_create(&fartingSgi))) {
+    std::cerr << "Error creating script file\n";
+    return 1;
+  }
+
+  strncpy (job.name,jobName.c_str(),MAXNAMELEN-1);
+  strncpy (job.cmd,pathToScript,MAXCMDLEN-1);
+  strncpy (job.owner,getenv("USER"),MAXNAMELEN-1);
+  strncpy (job.email,getenv("USER"),MAXNAMELEN-1);
+  job.frame_start = frameStart;
+  job.frame_end = frameEnd;
+  job.frame_step = frameStep;
+  job.block_size = frameStep;
+  job.priority = 500;
+
+  job.koj = KOJ_FARTING;
+  strncpy (job.koji.farting.scene,scenePath.c_str(),BUFFERLEN-1);
+  strncpy (job.koji.farting.viewcmd,"",BUFFERLEN-1);
 
   job.limits.os_flags = OSF_ALL;
   job.limits.nmaxcpus = (uint16_t)-1;
@@ -913,7 +978,7 @@ int RegisterPixieJobFromFile (std::ifstream &infile) {
   char *pathToScript;
 
   job_init(&job);
-  
+
   getline(infile,owner);
   getline(infile,jobName);
   infile >> frameStart;
@@ -1306,6 +1371,8 @@ int str2toj (char *str) {
     toj = TOJ_MENTALRAY;
   } else if (strstr(str,"blender") != NULL) {
     toj = TOJ_BLENDER;
+  } else if (strstr(str,"farting") != NULL) {
+    toj = TOJ_FARTING;
   } else if (strstr(str,"3delight") != NULL) {
     toj = TOJ_THREEDELIGHT;
   } else if (strstr(str,"aqsis") != NULL) {
