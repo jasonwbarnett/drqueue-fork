@@ -32,6 +32,7 @@
 #include "drqm_jobs_maya.h"
 #include "drqm_jobs_mentalray.h"
 #include "drqm_jobs_blender.h"
+#include "drqm_jobs_farting.h"
 #include "drqm_jobs_mantra.h"
 #include "drqm_jobs_aqsis.h"
 #include "drqm_jobs_pixie.h"
@@ -98,6 +99,7 @@ struct drqmj_dnji {       /* dialog new job info */
   struct drqmj_koji_maya koji_maya; /* koj info for maya */
   struct drqmj_koji_mentalray koji_mentalray; /* koj info for mentalray */
   struct drqmj_koji_blender koji_blender; /* koj info for blender */
+  struct drqmj_koji_farting koji_farting; /* koj info for farting */
   struct drqmj_koji_aqsis koji_aqsis; /* koj info for aqsis */
   struct drqmj_koji_mantra koji_mantra; /* koj info for aqsis */
   struct drqmj_koji_pixie koji_pixie; /* koj info for pixie */

@@ -41,6 +41,7 @@
 #include "drqm_jobs_maya.h"
 #include "drqm_jobs_mentalray.h"
 #include "drqm_jobs_blender.h"
+#include "drqm_jobs_farting.h"
 #include "drqm_jobs_mantra.h"
 #include "drqm_jobs_aqsis.h"
 #include "drqm_jobs_pixie.h"
@@ -529,6 +530,14 @@ CopyJob_CloneInfo (struct drqm_jobs_info *info) {
                        info->jobs[info->row].koji.blender.scene);
     gtk_entry_set_text(GTK_ENTRY(info->dnj.koji_blender.eviewcmd),
                        info->jobs[info->row].koji.blender.viewcmd);
+    break;
+  case KOJ_FARTING:
+    gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(info->dnj.ckoj)->entry),
+                       "Farting");
+    gtk_entry_set_text(GTK_ENTRY(info->dnj.koji_farting.escene),
+                       info->jobs[info->row].koji.farting.scene);
+    gtk_entry_set_text(GTK_ENTRY(info->dnj.koji_farting.eviewcmd),
+                       info->jobs[info->row].koji.farting.viewcmd);
     break;
   case KOJ_PIXIE:
     gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(info->dnj.ckoj)->entry),
@@ -1063,6 +1072,10 @@ dnj_submit (struct drqmj_dnji *info) {
     strncpy(job.koji.blender.scene,gtk_entry_get_text(GTK_ENTRY(info->koji_blender.escene)),BUFFERLEN-1);
     strncpy(job.koji.blender.viewcmd,gtk_entry_get_text(GTK_ENTRY(info->koji_blender.eviewcmd)),BUFFERLEN-1);
     break;
+  case KOJ_FARTING:
+    strncpy(job.koji.farting.scene,gtk_entry_get_text(GTK_ENTRY(info->koji_farting.escene)),BUFFERLEN-1);
+    strncpy(job.koji.farting.viewcmd,gtk_entry_get_text(GTK_ENTRY(info->koji_farting.eviewcmd)),BUFFERLEN-1);
+    break;
   case KOJ_PIXIE:
     strncpy(job.koji.pixie.scene,gtk_entry_get_text(GTK_ENTRY(info->koji_pixie.escene)),BUFFERLEN-1);
     strncpy(job.koji.pixie.viewcmd,gtk_entry_get_text(GTK_ENTRY(info->koji_pixie.eviewcmd)),BUFFERLEN-1);
@@ -1520,6 +1533,10 @@ dnj_koj_combo_changed (GtkWidget *entry, struct drqm_jobs_info *info) {
       break;
     case KOJ_BLENDER:
       info->dnj.fkoj = dnj_koj_frame_blender (info);
+      gtk_box_pack_start(GTK_BOX(info->dnj.vbkoj),info->dnj.fkoj,TRUE,TRUE,2);
+      break;
+    case KOJ_FARTING:
+      info->dnj.fkoj = dnj_koj_frame_farting (info);
       gtk_box_pack_start(GTK_BOX(info->dnj.vbkoj),info->dnj.fkoj,TRUE,TRUE,2);
       break;
     case KOJ_MANTRA:

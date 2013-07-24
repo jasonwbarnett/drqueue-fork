@@ -116,6 +116,7 @@ static GtkWidget *jdd_koj_widgets (struct drqm_jobs_info *info);
 static void jdd_maya_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info);
 static void jdd_mentalray_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info);
 static void jdd_blender_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info);
+static void jdd_farting_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info);
 static void jdd_pixie_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info);
 static void jdd_3delight_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info);
 static void jdd_lightwave_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info);
@@ -139,7 +140,7 @@ void
 JobDetails(GtkWidget *menu_item, struct drqm_jobs_info *info) {
   GtkWidget *dialog;
   struct drqm_jobs_info *newinfo;
-  
+
   // fix compiler warning
   (void)menu_item;
 
@@ -282,6 +283,13 @@ GtkWidget *CreateMenuFrames (struct drqm_jobs_info *info) {
     gtk_menu_append(GTK_MENU(menu),menu_item);
     gtk_signal_connect(GTK_OBJECT(menu_item),"activate",GTK_SIGNAL_FUNC(jdd_blender_viewcmd_exec),info);
     break;
+  case KOJ_FARTING:
+    menu_item = gtk_menu_item_new ();
+    gtk_menu_append(GTK_MENU(menu),menu_item);
+    menu_item = gtk_menu_item_new_with_label("Watch image");
+    gtk_menu_append(GTK_MENU(menu),menu_item);
+    gtk_signal_connect(GTK_OBJECT(menu_item),"activate",GTK_SIGNAL_FUNC(jdd_farting_viewcmd_exec),info);
+    break;
   case KOJ_PIXIE:
     menu_item = gtk_menu_item_new ();
     gtk_menu_append(GTK_MENU(menu),menu_item);
@@ -380,7 +388,7 @@ jdd_update_blocked_hosts (GtkWidget *w, struct drqm_jobs_info *info) {
   uint32_t ncols = 2;
   uint32_t i;
   char **buff;
-  
+
   // fix compiler warning
   (void)w;
 
@@ -412,7 +420,7 @@ jdd_update_blocked_hosts (GtkWidget *w, struct drqm_jobs_info *info) {
   }
 
   gtk_clist_thaw(GTK_CLIST(info->jdd.clist_bh));
-  
+
   for (i=0;i<ncols;i++)
     free(buff[i]);
   free(buff);
@@ -676,7 +684,7 @@ static void
 jdd_add_blocked_host (GtkWidget *button, struct drqm_jobs_info *info) {
   GList *sel;
   char *name;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -721,7 +729,7 @@ CreateFrameInfoClist (void) {
 static void
 jdd_destroy (GtkWidget *w, struct drqm_jobs_info *info) {
   job_delete (&info->jdd.job);
-  
+
   // fix compiler warning
   (void)w;
 
@@ -1024,7 +1032,7 @@ static GtkWidget *
 jdd_add_blocked_host_dialog_clist (struct drqm_jobs_info *info) {
   gchar *titles[] = { "ID","Running","Name","OS","CPUs","Load Avg" };
   GtkWidget *clist;
-  
+
   // fix compiler warning
   (void)info;
 
@@ -1106,7 +1114,7 @@ static gint
 PopupMenuFrames (GtkWidget *clist, GdkEvent *event, struct drqm_jobs_info *info) {
   // fix compiler warning
   (void)clist;
-  
+
   if (event->type == GDK_BUTTON_PRESS) {
     GdkEventButton *bevent = (GdkEventButton *) event;
     if (bevent->button != 3)
@@ -1124,7 +1132,7 @@ PopupMenuFrames (GtkWidget *clist, GdkEvent *event, struct drqm_jobs_info *info)
 static void
 SeeFrameLog (GtkWidget *w, struct drqm_jobs_info *info) {
   GtkWidget *dialog;
-  
+
   // fix compiler warning
   (void)w;
 
@@ -1156,7 +1164,7 @@ SeeFrameLogDialog (struct drqm_jobs_info *info) {
   rdata = (struct row_data *) gtk_clist_get_row_data(GTK_CLIST(info->jdd.clist), info->jdd.row);
   task.frame = rdata->frame;
   task.ijob = info->jdd.job.id;
-  
+
   // Allocate memory for idle info
   iinfo = (struct idle_info *) malloc(sizeof (struct idle_info));
 
@@ -1227,7 +1235,7 @@ jdd_requeue_frames (GtkWidget *button,struct drqm_jobs_info *info_dj) {
   GList *sel;
   uint32_t frame;
   struct row_data *rdata;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -1246,7 +1254,7 @@ static void
 jdd_delete_blocked_host (GtkWidget *w, struct drqm_jobs_info *info) {
   GList *sel;
   uint32_t ipos; // Position on the blocked host list
-  
+
   // fix compiler warning
   (void)w;
 
@@ -1265,7 +1273,7 @@ jdd_kill_frames_confirm (GtkWidget *button, struct drqm_jobs_info *info_dj) {
   GtkWidget *dialog;
   GList *cbs = NULL ;  /* callbacks */
   GList *sel;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -1291,7 +1299,7 @@ jdd_kill_frames (GtkWidget *button,struct drqm_jobs_info *info) {
   GList *sel;
   uint32_t frame;
   struct row_data *rdata;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -1312,7 +1320,7 @@ jdd_finish_frames (GtkWidget *button,struct drqm_jobs_info *info) {
   GList *sel;
   uint32_t frame;
   struct row_data *rdata;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -1333,7 +1341,7 @@ jdd_frames_reset_requeued (GtkWidget *button,struct drqm_jobs_info *info) {
   GList *sel;
   uint32_t frame;
   struct row_data *rdata;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -1353,7 +1361,7 @@ jdd_kill_finish_frames_confirm (GtkWidget *button, struct drqm_jobs_info *info) 
   GtkWidget *dialog;
   GList *cbs = NULL ;  /* callbacks */
   GList *sel;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -1379,7 +1387,7 @@ jdd_kill_finish_frames (GtkWidget *button,struct drqm_jobs_info *info) {
   GList *sel;
   uint32_t frame;
   struct row_data *rdata;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -1398,7 +1406,7 @@ static gint
 PopupMenuBlockedHosts (GtkWidget *clist, GdkEvent *event, struct drqm_jobs_info *info) {
   // fix compiler warning
   (void)clist;
-  
+
   if (event->type == GDK_BUTTON_PRESS) {
     GdkEventButton *bevent = (GdkEventButton *) event;
     if (bevent->button != 3) {
@@ -1429,7 +1437,7 @@ jdd_maya_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info) {
   extern char **environ;
   struct row_data *rdata;
   char *exec_path;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -1467,7 +1475,7 @@ jdd_mentalray_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info) {
   extern char **environ;
   struct row_data *rdata;
   char *exec_path;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -1504,7 +1512,7 @@ jdd_blender_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info) {
   extern char **environ;
   struct row_data *rdata;
   char *exec_path;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -1533,6 +1541,43 @@ jdd_blender_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info) {
 }
 
 static void
+jdd_farting_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info) {
+  /* Sets the waiting frames as finished */
+  GList *sel;
+  uint32_t frame,iframe;
+  const char *new_argv[4];
+  extern char **environ;
+  struct row_data *rdata;
+  char *exec_path;
+
+  // fix compiler warning
+  (void)button;
+
+  if (!(sel = GTK_CLIST(info->jdd.clist)->selection)) {
+    return;
+  }
+
+  rdata = (struct row_data *) gtk_clist_get_row_data(GTK_CLIST(info->jdd.clist), GPOINTER_TO_INT(sel->data));
+  frame = rdata->frame;
+
+  iframe = job_frame_number_to_index (&info->jdd.job,frame);
+
+  if (fork() == 0) {
+    new_argv[0] = SHELL_NAME;
+    new_argv[1] = "-c";
+    new_argv[2] = info->jdd.job.koji.farting.viewcmd;
+    new_argv[3] = NULL;
+
+    job_environment_set(&info->jdd.job,iframe);
+
+    exec_path = SHELL_PATH;
+    execve(exec_path ,(char*const*)new_argv,environ);
+    perror("execve");
+    exit (1);
+  }
+}
+
+static void
 jdd_pixie_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info) {
   /* Sets the waiting frames as finished */
   GList *sel;
@@ -1541,7 +1586,7 @@ jdd_pixie_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info) {
   extern char **environ;
   struct row_data *rdata;
   char *exec_path;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -1577,7 +1622,7 @@ jdd_3delight_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info) {
   extern char **environ;
   struct row_data *rdata;
   char *exec_path;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -1614,7 +1659,7 @@ jdd_turtle_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info) {
   extern char **environ;
   struct row_data *rdata;
   char *exec_path;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -1652,7 +1697,7 @@ jdd_xsi_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info) {
   extern char **environ;
   struct row_data *rdata;
   char *exec_path;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -1689,7 +1734,7 @@ jdd_luxrender_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info) {
   extern char **environ;
   struct row_data *rdata;
   char *exec_path;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -1827,7 +1872,7 @@ jdd_limits_lmemory_bcp (GtkWidget *bclicked, struct drqm_jobs_info *info) {
   GtkWidget *button;
   GtkWidget *image;
   char buf[BUFFERLEN];
-  
+
   // fix compiler warning
   (void)bclicked;
 
@@ -1875,7 +1920,7 @@ jdd_limits_lpool_bcp (GtkWidget *bclicked, struct drqm_jobs_info *info) {
   GtkWidget *button;
   GtkWidget *image;
   char buf[BUFFERLEN];
-  
+
   // fix compiler warning
   (void)bclicked;
 
@@ -1914,18 +1959,18 @@ jdd_limits_lpool_bcp (GtkWidget *bclicked, struct drqm_jobs_info *info) {
   gtk_grab_add (dialog);
 }
 
-static void 
+static void
 jdd_limits_lpool_bcp_bokp (GtkWidget *bclicked, struct drqm_jobs_info *info) {
   // fix compiler warning
   (void)bclicked;
-  
+
   request_job_limits_pool_set(info->jdd.job.id,(char*)gtk_entry_get_text(GTK_ENTRY(info->jdd.limits.epool)),CLIENT);
 }
 
 static void
 jdd_limits_lmemory_bcp_bokp (GtkWidget *bclicked, struct drqm_jobs_info *info) {
   uint32_t memory;
-  
+
   // fix compiler warning
   (void)bclicked;
 
@@ -1938,7 +1983,7 @@ static void
 jdd_sesframes_bcp (GtkWidget *button, struct drqm_jobs_info *info) {
   /* Start, End, Step frames, button change pressed */
   GtkWidget *dialog;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -1950,7 +1995,7 @@ jdd_sesframes_bcp (GtkWidget *button, struct drqm_jobs_info *info) {
 static void
 jdd_add_blocked_host_bp (GtkWidget *button, struct drqm_jobs_info *info) {
   GtkWidget *dialog;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -2045,7 +2090,7 @@ jdd_sesframes_change_dialog (struct drqm_jobs_info *info) {
 static void
 jdd_sesframes_cd_bsumbit_pressed (GtkWidget *button, struct drqm_jobs_info *info) {
   uint32_t frame_start,frame_end,frame_step,block_size;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -2067,7 +2112,7 @@ void
 jdd_limits_nmaxcpus_bcp (GtkWidget *button, struct drqm_jobs_info *info) {
   /* Job Details Dialog Limits nmaxcpus Button Change Pressed */
   GtkWidget *dialog;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -2132,7 +2177,7 @@ void
 jdd_nmcd_bsumbit_pressed (GtkWidget *button, struct drqm_jobs_info *info) {
   uint32_t nmaxcpus;
   char msg[BUFFERLEN];
-  
+
   // fix compiler warning
   (void)button;
 
@@ -2152,7 +2197,7 @@ void
 jdd_limits_nmaxcpuscomputer_bcp (GtkWidget *button, struct drqm_jobs_info *info) {
   /* Job Details Dialog Limits nmaxcpus Button Change Pressed */
   GtkWidget *dialog;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -2216,7 +2261,7 @@ void
 jdd_nmccd_bsumbit_pressed (GtkWidget *button, struct drqm_jobs_info *info) {
   uint32_t nmaxcpuscomputer;
   char msg[BUFFERLEN];
-  
+
   // fix compiler warning
   (void)button;
 
@@ -2236,7 +2281,7 @@ static void
 jdd_priority_bcp (GtkWidget *button, struct drqm_jobs_info *info) {
   /* Priority button change pressed */
   GtkWidget *dialog;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -2346,7 +2391,7 @@ static void
 jdd_pcd_bsumbit_pressed (GtkWidget *button, struct drqm_jobs_info *info) {
   uint32_t priority;
   char msg[BUFFERLEN];
-  
+
   // fix compiler warning
   (void)button;
 
@@ -2440,6 +2485,10 @@ jdd_koj_widgets (struct drqm_jobs_info *info) {
     koj_vbox = jdd_koj_blender_widgets (info);
     gtk_box_pack_start (GTK_BOX(vbox),koj_vbox,FALSE,FALSE,2);
     break;
+  case KOJ_FARTING:
+    koj_vbox = jdd_koj_farting_widgets (info);
+    gtk_box_pack_start (GTK_BOX(vbox),koj_vbox,FALSE,FALSE,2);
+    break;
   case KOJ_PIXIE:
     koj_vbox = jdd_koj_pixie_widgets (info);
     gtk_box_pack_start (GTK_BOX(vbox),koj_vbox,FALSE,FALSE,2);
@@ -2514,7 +2563,7 @@ jdd_table_pack (GtkWidget *table, GtkWidget *label1, GtkWidget *label2, GtkWidge
 void
 jdd_framelist_column_clicked (GtkCList *clist, gint column, struct drqm_jobs_info *info) {
   static GtkSortType dir = GTK_SORT_ASCENDING;
-  
+
   // fix compiler warning
   (void)info;
 
@@ -2561,7 +2610,7 @@ jdd_framelist_cmp_requeued (GtkCList *clist, gconstpointer ptr1, gconstpointer p
   struct row_data *ra,*rb;
   char a,b;
   uint32_t ifa,ifb;
-  
+
   // fix compiler warning
   (void)clist;
 
@@ -2589,7 +2638,7 @@ int
 jdd_framelist_cmp_frame (GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2) {
   struct row_data *ra,*rb;
   uint32_t a,b;
-  
+
   // fix compiler warning
   (void)clist;
 
@@ -2615,7 +2664,7 @@ jdd_framelist_cmp_exitcode (GtkCList *clist, gconstpointer ptr1, gconstpointer p
   struct row_data *ra,*rb;
   char a,b;
   uint32_t ifa,ifb;
-  
+
   // fix compiler warning
   (void)clist;
 
@@ -2644,7 +2693,7 @@ jdd_framelist_cmp_status (GtkCList *clist, gconstpointer ptr1, gconstpointer ptr
   struct row_data *ra,*rb;
   char a,b;
   uint16_t ifa,ifb;
-  
+
   // fix compiler warning
   (void)clist;
 
@@ -2673,7 +2722,7 @@ jdd_framelist_cmp_icomp (GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2
   struct row_data *ra,*rb;
   uint32_t a,b;
   uint16_t ifa,ifb;
-  
+
   // fix compiler warning
   (void)clist;
 
@@ -2702,7 +2751,7 @@ jdd_framelist_cmp_start_time (GtkCList *clist, gconstpointer ptr1, gconstpointer
   struct row_data *ra,*rb;
   time_t a,b;
   uint16_t ifa,ifb;
-  
+
   // fix compiler warning
   (void)clist;
 
@@ -2731,7 +2780,7 @@ jdd_framelist_cmp_end_time (GtkCList *clist, gconstpointer ptr1, gconstpointer p
   struct row_data *ra,*rb;
   time_t a,b;
   uint16_t ifa,ifb;
-  
+
   // fix compiler warning
   (void)clist;
 
@@ -2763,7 +2812,7 @@ jdd_lightwave_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info) {
   extern char **environ;
   struct row_data *rdata;
   char *exec_path;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -2799,7 +2848,7 @@ jdd_nuke_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info) {
   extern char **environ;
   struct row_data *rdata;
   char *exec_path;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -2835,7 +2884,7 @@ jdd_aftereffects_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info) {
   extern char **environ;
   struct row_data *rdata;
   char *exec_path;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -2871,7 +2920,7 @@ jdd_shake_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info) {
   extern char **environ;
   struct row_data *rdata;
   char *exec_path;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -2908,7 +2957,7 @@ jdd_aqsis_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info) {
   extern char **environ;
   struct row_data *rdata;
   char *exec_path;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -2945,7 +2994,7 @@ jdd_mantra_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info) {
   extern char **environ;
   struct row_data *rdata;
   char *exec_path;
-  
+
   // fix compiler warning
   (void)button;
 
@@ -2981,7 +3030,7 @@ jdd_terragen_viewcmd_exec (GtkWidget *button, struct drqm_jobs_info *info) {
   extern char **environ;
   struct row_data *rdata;
   char *exec_path;
-  
+
   // fix compiler warning
   (void)button;
 
