@@ -68,7 +68,7 @@ setup_user () {
  sudo chown drqueue /Users/drqueue
  echo " "
 }
-  
+
 start_master () {
  # start Launchd script for master
  echo " * Starting master daemon."
