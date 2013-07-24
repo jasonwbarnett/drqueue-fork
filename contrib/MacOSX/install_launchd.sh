@@ -10,10 +10,6 @@ function echo_space () {
 	echo
 }
 
-echo_space "This will prepare your system for automatic startup of DrQueue daemons.
-You need admin priviledges for this. Please type in your password if asked.
-This has only been tested on Mac OS X 10.5 (Leopard) and 10.8 (Mountain Lion) so far."
-
 setup_master () {
 	echo " * Installing Launchd script for master daemon."
 	echo "sudo cp org.drqueue.Master.plist /Library/LaunchDaemons/"
@@ -136,6 +132,10 @@ menu_user () {
 }
 
 # program start
+
+echo_space "This will prepare your system for automatic startup of DrQueue daemons.
+You need admin priviledges for this. Please type in your password if asked.
+This has only been tested on Mac OS X 10.5 (Leopard) and 10.8 (Mountain Lion) so far."
 
 menu_user
 
