@@ -1482,6 +1482,8 @@ dnj_koj_combo_changed (GtkWidget *entry, struct drqm_jobs_info *info) {
     new_koj = KOJ_MENTALRAY;
   } else if (strcmp(gtk_entry_get_text(GTK_ENTRY(entry)),"Blender") == 0) {
     new_koj = KOJ_BLENDER;
+  } else if (strcmp(gtk_entry_get_text(GTK_ENTRY(entry)),"Farting") == 0) {
+    new_koj = KOJ_FARTING;
   } else if (strcmp(gtk_entry_get_text(GTK_ENTRY(entry)),"Mantra") == 0) {
     new_koj = KOJ_MANTRA;
   } else if (strcmp(gtk_entry_get_text(GTK_ENTRY(entry)),"Aqsis") == 0) {
