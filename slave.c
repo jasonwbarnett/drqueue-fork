@@ -128,7 +128,7 @@ int main (int argc,char *argv[]) {
     set_signal_handlers_child_listening ();
     slave_listening_process (&sdb);
     log_auto (L_INFO,"Listener process exiting...");
-    exit (0); 
+    exit (0);
   } else if (listener_pid == -1) {
     drerrno_system = errno;
     log_auto (L_ERROR,"Could not create the listener process. (%s)", strerror(drerrno_system));
@@ -147,7 +147,7 @@ int main (int argc,char *argv[]) {
     drerrno_system = errno;
     log_auto (L_ERROR,"Could not create the listener process. (%s)", strerror(drerrno_system));
     slave_exit(SIGINT);
-  } 
+  }
 
   while (1) {
     get_computer_status (&sdb.comp->status,sdb.semid);
@@ -260,7 +260,7 @@ void clean_out (int signal) {
   kill (0,SIGINT);
 
   while ((child_pid = wait (&rc)) != -1) {
-    printf ("Child arrived ! %i\n",(int)child_pid);
+    printf ("Child arrived! pid: %i, errno: %i, strerror: %s \n",(int)child_pid,errno,strerror(errno));
   }
 
   request_slavexit (sdb.comp->hwinfo.id,SLAVE);
@@ -293,7 +293,7 @@ int64_t get_shared_memory_slave (int force) {
     exit (1);
   }
   log_auto (L_DEBUG,"get_shared_memory_slave(): using file '%s' as key for shared resources.",file);
-  
+
   if ((key = ftok (file,'A')) == -1) {
     log_auto (L_ERROR,"get_shared_memory_slave(): error obtaining key for shared memory (ftok): %s", strerror(errno));
     exit (1);
@@ -331,7 +331,7 @@ int64_t get_semaphores_slave (void) {
     exit (1);
   }
   log_auto (L_DEBUG,"get_semaphores_slave(): using file '%s' as key for shared resources.",file);
-  
+
 
   if ((key = ftok (file,'A')) == -1) {
     log_auto (L_ERROR,"Getting key for semaphores");
@@ -723,7 +723,7 @@ void launch_task (struct slave_database *sdb, uint16_t itask) {
     exit (1);
   } else {
     // in this "else" waiter_pid actually contains the PID of the waiter process
-  } 
+  }
 }
 
 
@@ -816,7 +816,7 @@ void slave_set_limits (struct slave_database *sdb) {
 void
 slave_exit (int signal) {
   // Slave's clean exit procedure
-  
+
   // kill all slave processes with signal
   kill(0, signal);
 }
